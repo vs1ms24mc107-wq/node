@@ -1,0 +1,57 @@
+pipeline
+{
+	agent any
+	environment
+	{
+		DOCKER_CREDENTIALS=credentials('vm')
+		Image_Name="vs1ms24mc107/node"
+	}
+	stages
+	{
+		stage('checkout')
+		{
+			steps
+			{
+				git branch:"master", url:"git@github.com:vs1ms24mc107-wq/node.git"
+			}
+		}
+		stage('Build docker image')
+		{
+			steps
+			{
+				script{
+					dockerImage=docker.build("${Image_Name}:latest")
+				}
+			}
+		}
+		stage('push to docker hub')
+		{
+			steps
+			{
+				script
+				{
+					docker.withRegistry("https://index.docker.io/v1/","vm")
+					{
+						dockerImage.push()
+					}
+				}
+			}
+		}
+	}
+	post
+	{
+		success
+		{
+			echo "pipeline successful"
+		}
+		failure
+		{
+			echo "pipeline failed"
+		}
+		always
+		{
+			echo "cleaning up workspace"
+			deleteDir()
+		}
+	}
+}
