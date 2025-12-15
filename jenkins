@@ -12,7 +12,7 @@ pipeline
 		{
 			steps
 			{
-				git branch:"master", url:"git@github.com:vs1ms24mc107-wq/node.git"
+				git branch:"main", url:"git@github.com:vs1ms24mc107-wq/node.git"
 			}
 		}
 		stage('Build docker image')
